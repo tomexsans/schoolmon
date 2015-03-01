@@ -44,7 +44,37 @@ Class Checker_model extends CI_Model
    }
 
 
+   function get_faculty($id){
+      $q = $this->db->where('fid',$id)->limit(1)->get('faculty');
+
+      if($q->num_rows() >=1 ){return $q->row(); }else{
 
 
+      $obnject['fid'] = '';
+      $obnject['lastname'] = '';
+      $obnject['firstname'] = '';
+      $obnject['mi'] = '';
+      $obnject['file_url'] = '';
+
+      return (object)$obnject;
+    }
+   }
+
+   function get_dtr($faculty_id,$time){
+
+
+
+      $qw = $this->db->select('dtrid')->where('fid',$faculty_id)
+               ->where('date(datetime)',date('Y-m-d'))
+               ->where('time', $time)
+               ->limit(1)
+               ->get('dtr');
+
+    
+               // print_r($this->db->last_query());exit;
+
+     return $qw->num_rows() >=1 ? true : false;
+
+   }
 
 }

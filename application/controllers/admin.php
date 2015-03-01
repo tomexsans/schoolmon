@@ -12,7 +12,7 @@ class Admin extends MY_Controller {
 		$this->load->model('log_model');
 		$this->load->model('checker_model');
 		$this->load->helper("url");
-
+		$this->admin_model->check_school_year();
 	   //for crud
 	   $this->load->database();
 		$this->load->library('grocery_CRUD');
@@ -204,9 +204,10 @@ class Admin extends MY_Controller {
 
 			$crud->set_theme('flexigrid');
 			$crud->set_table('rooms');
+			$crud->where('sy',$this->sy->id);
 
 			$crud->set_subject('Rooms');
-
+			$crud->columns('roomcode','sectioncode','fid','college_Code','day','time','period');
 		    $crud->field_type('day','dropdown',
             array('MONDAY' => 'MONDAY', 'SATURDAY' => 'SATURDAY' ,'TUESDAY & THURSDAY' => 'TUESDAY & THURSDAY' , 'TUESDAY & WEDNESDAY' => 'TUESDAY & WEDNESDAY','WEDNESDAY & FRIDAY'=>'WEDNESDAY & FRIDAY','THURSDAY & FRIDAY'=>'THURSDAY & FRIDAY',''));
 
@@ -388,39 +389,79 @@ class Admin extends MY_Controller {
 	}
 
 
-	public function fileimport(){
-		$data = array();
-		$header['title'] = 'Import Schedule';
+	public function fileimport($type = false,$id = false){
 
 
-		$config['upload_path'] = './imports/';
-		$config['allowed_types'] = 'csv';
-		$config['max_size']	= '5000';
-		$config['file_name']	= time().'_'.md5(time());
-
-		$this->load->library('upload', $config);
-		$this->upload->initialize($config);
-
-		$data['system_message'] = $this->session->flashdata('system_message');
-		$data['imports'] = $this->admin_model->get_saved_imports();
-
-		if($this->input->post())
+		if($type === false)
 		{
-			if ( ! $this->upload->do_upload())
+			$data = array();
+			$header['title'] = 'Import Schedule';
+			$data['type'] = 'import';
+
+			$config['upload_path'] = './imports/';
+			$config['allowed_types'] = 'csv';
+			$config['max_size']	= '5000';
+			$config['file_name']	= time().'_'.md5(time());
+
+			$this->load->library('upload', $config);
+			$this->upload->initialize($config);
+
+			$data['system_message'] = $this->session->flashdata('system_message');
+			$data['imports'] = $this->admin_model->get_saved_imports();
+
+			if($this->input->post())
 			{
+				if ( ! $this->upload->do_upload())
+				{
 
-				$data['uploaderrors'] =  $this->upload->display_errors();	
+					$data['uploaderrors'] =  $this->upload->display_errors();	
 
-			}else{
-				$importDate = $this->upload->data();
-				$result = $this->admin_model->save_imports($importDate);
-
-				if($result === true){
-					$this->session->set_flashdata('system_message','<div class="alert alert-success">Uploaded Files were successfully saved.</div>');
-					redirect('admin/fileimport');
 				}else{
-					$data['system_message'] = 'Unable to saved import schedule.';
+					$importDate = $this->upload->data();
+					$result = $this->admin_model->save_imports($importDate);
+
+					if($result === true){
+						$this->session->set_flashdata('system_message','<div class="alert alert-success">Uploaded Files were successfully saved.</div>');
+						redirect('admin/fileimport');
+					}else{
+						$data['system_message'] = 'Unable to saved import schedule.';
+					}
 				}
+			}
+
+		}else{
+
+			$type = strtolower(htmlentities($type));
+			
+			if($type == 'show' OR $type == 'delete'){
+				$result = $this->admin_model->get_saved_imports($id);
+				$filepath = './imports/'.$result->filename;
+
+				$handle = fopen($filepath,'r');
+				$csv_data = array();
+				//get csv file data
+
+				while ( ($data = fgetcsv($handle,1000) ) !== FALSE ) {
+					$csv_data[] = $data;
+				}
+
+				$data['csv'] = count($csv_data) >= 1 ? $csv_data : null;
+				$header['title'] = 'Show Schedule';
+				$data['type'] = $type;
+				$data['data'] = $result;
+
+
+				if($this->input->post('delete_csv_file')){
+
+					$res = $this->admin_model->delete_csv($id);
+					if($res === true){
+						$this->session->set_flashdata('system_message', '<div class="alert alert-success">Successfully Deleted CSV FIle.</div>');
+						redirect('admin/fileimport');
+					}else{
+						$data['system_message'] = '<div class="alert alert-danger">Unable to delete CSV File.</div>';
+					}
+				}
+
 			}
 		}
 

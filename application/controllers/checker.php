@@ -114,6 +114,7 @@ class Checker extends CI_Controller {
       $faculty = $this->input->post('faculty');
       $fidname = $this->whois($faculty);
       
+
       $date = new DateTime();
       $stamp = $date->format('Y-m-d H:i:s');
      
@@ -124,10 +125,12 @@ class Checker extends CI_Controller {
                           'period'  => $period,
                           'fid'     => $faculty,
                           'datetime' => $stamp,
-                          'fidname'  => $fidname
-                                );
+                          'fidname'  => $fidname);
 
-     
+
+      $data['faculty_data'] = $this->checker_model->get_faculty($faculty);
+      $data['is_checked'] = $this->checker_model->get_dtr($faculty,$time);
+
 
       $data['title']  = 'Tarlac State University';
 

@@ -17,12 +17,12 @@ class MY_Model extends CI_Model {
 		{
 			$r = $q->row();
 
-			$prep['sy_id'] = $r->id;
-			$prep['sy_code'] = $r->code;
-			$prep['sy_from'] = $r->year_from;
-			$prep['sy_to'] = $r->year_to;
-			$prep['sy_year'] = $r->year_from.' - '.$r->year_to;
-			$prep['sy_note'] = $r->comment;
+			$prep['id'] = $r->id;
+			$prep['code'] = $r->code;
+			$prep['from'] = $r->year_from;
+			$prep['to'] = $r->year_to;
+			$prep['year'] = $r->year_from.' - '.$r->year_to;
+			$prep['note'] = $r->comment;
 
 
 			return (object)$prep;
@@ -31,6 +31,9 @@ class MY_Model extends CI_Model {
 		}
 	}
 
+	public function return_year_semester(){
+		return $this->sy;
+	}
 }
 
 /* End of file MY_Model.php */

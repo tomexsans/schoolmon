@@ -35,13 +35,12 @@
 
     <?php foreach ($reports as $row) {?>
     <?php $CI =& get_instance(); ?>
-    <td><?php echo $row->room; ?></td>
+    <td><?php echo $row->roomcode; ?></td>
     <td><?php echo $CI->whois($row->fid); ?></td>
     <td><?php echo $row->day .'/' . $row->time; ?></td>
     <td><?php echo $row->status; ?></td>
     <td><?php echo $row->remarks; ?></td>
     </tr>
-
     <?php } ?>
     </tbody>
     </table>

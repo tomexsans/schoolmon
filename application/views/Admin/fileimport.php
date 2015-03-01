@@ -1,10 +1,51 @@
 <div id="wrapper">
          <!--Nav template -->
         <?php $this->load->view('template/sidebar');?> 
-        </nav>  
         <!-- /. NAV SIDE  -->
         <div id="page-wrapper" >
             <div id="page-inner">
+
+        <?php if(isset($system_message)) echo $system_message;?>
+
+        <?php if($type == 'delete' OR $type == 'show'):?>
+            
+            <div class="row">
+                    <div class="col-md-12">
+                     <h2>Show CSV file</h2>   
+                        <ul style="list-style:none">
+                            <li>Showing CSV file with filename <strong><?php echo $data->uploaded?></strong></li>
+                            <li>Uploaded BY: <strong><?php echo $data->uploaded_by_name?></strong></li>
+                            <li>Uploaded ON: <strong><?php echo $data->created_at?></strong></li>
+                            <li>Importe status: <strong><?php echo $data->imported == 1 ? 'File already Imported' : 'File not Imported';?></strong></li>
+                        </ul> 
+                    </div>
+                </div> 
+            <?php if($csv):?>
+            <table class="table table-striped table-bordered">
+                <?php foreach ($csv as $key => $value):$counter = count($value)-1; ?>
+                    <tr>
+                        <?php for ($i=0; $i < $counter; $i++):?>
+                            <td><?php echo $value[$i];?></td>
+                        <?php endfor;?>
+                    </tr>
+                <?php endforeach ?>
+            </table>
+
+            <?php else:?>
+                <div class="alert alert-notive"> No data to show</div>
+            <?php endif;?>
+
+
+            <?php if($type == 'delete'):?>
+                <form action="<?php echo site_url('admin/fileimport/'.$type.'/'.$data->id );?>" method="POST">
+                    <label style="color:#f00">You are about to delete a data, this cannot be undone.</label><br>
+                    <input type="hidden" value="<?php echo $data->id?>">
+                    <input type="submit" name="delete_csv_file" value="Yes, Continue and Delete CSV File" class="btn btn-danger btn-lg">
+                </form>
+            <?php endif;?>
+
+        <?php elseif($type == 'import'):?>
+            
                 <div class="row">
                     <div class="col-md-12">
                      <h2>Admin Dashboard</h2>   
@@ -13,7 +54,7 @@
                 </div>              
                       
                 <hr /> 
-                <?php if(isset($system_message)) echo $system_message;?>
+                
                 <?php if(isset($uploaderrors)) echo '<small style="color:#f00">'.$uploaderrors.'</small>';?>
 
                 <form action="<?php echo site_url('admin/fileimport');?>" method="POST" enctype="multipart/form-data">
@@ -54,8 +95,8 @@
                                 <td>
                                     <div class="btn-group">
                                         <a href="<?php echo site_url('admin/import_schedule');?>" class="import-data btn btn-primary" data-id="<?php echo $value->id?>" data-filename="<?php echo $value->uploaded?>" data-imported="<?php echo $value->imported?>">Import Schedule</a>
-                                        <a href="#" class="btn btn-success">show</a>
-                                        <a href="#" class="btn btn-danger">Delete</a>
+                                        <a href="<?php echo site_url('admin/fileimport/show/'.$value->id);?>" class="btn btn-success">show</a>
+                                        <a href="<?php echo site_url('admin/fileimport/delete/'.$value->id);?>" class="btn btn-danger">Delete</a>
                                     </div>
                                 </td>
                             </tr>
@@ -65,7 +106,9 @@
                 <?php else:?>
                     <div class="alert alert-warning">No Uploaded Schedules Found.</div>
                 <?php endif;?>
-            </div>
+            
+        <?php endif;?>
+        </div>
              <!-- /. PAGE INNER  -->
             </div>
          <!-- /. PAGE WRAPPER  -->

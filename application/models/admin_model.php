@@ -2,16 +2,28 @@
 Class Admin_model extends MY_Model
 {
 
-  function generate_reports($date1=NULL,$date2=NULL){
-   $this -> db -> select('*');
-   $this -> db -> from('dtr');
-   $this->db->where('datetime >=', $date1);
-   $this->db->where('datetime <=', $date2);
-   //  $this->db->get();
-   // print_r($this->db->last_query());
-   // die();
+  public function check_school_year(){
+    $q = $this->db->where('current',1)->where('status',1)->get('semester');
 
-   return $this->db->get()->result();
+    if($q->num_rows() >= 1){
+
+    }else{
+      echo '<div style="position:fixed;width:100%;z-index:9999 !important;border-radius:0" class="alert alert-danger"><strong><i class="fa fa-warning"></i> WARNING</strong> Please Add and Set a School Year Now. <a href="'.site_url('admin/semester').'"><strong>Click Here to Set School Year</strong></a></div>';
+    }
+
+  }
+
+
+  function generate_reports($date1=NULL,$date2=NULL){
+   $this ->db->from('dtr')->join('rooms','dtr.room = rooms.roomid','LEFT');
+   $this->db->where('dtr.datetime >=', $date1);
+   $this->db->where('dtr.datetime <=', $date2);
+   $q = $this->db->get();
+   // print_r($this->db->last_query());
+   // print_r($q->result());
+   // die();
+   return $q->num_rows() >= 1 ? $q->result() : false;
+   // return $this->db->get()->result();
   }
 
 
@@ -65,8 +77,6 @@ Class Admin_model extends MY_Model
       $current_user = $this->session->userdata('logged_in');
       $date = date('Y-m-d H:i:s');
 
-      
-
       $prep['filename'] = $data['file_name'];
       $prep['filepath'] = $data['file_path'];
       $prep['savepath'] = $data['full_path'];
@@ -77,6 +87,7 @@ Class Admin_model extends MY_Model
       $prep['uploaded_by_uname'] = $current_user['email'];
       $prep['created_at'] = $date;
       $prep['updated_at'] = $date;
+      // $prep['sy'] = $this->sy->id;
 
       $this->db->insert('schedule_imports',$prep);
 
@@ -87,15 +98,24 @@ Class Admin_model extends MY_Model
       return false;
    }
 
-   public function get_saved_imports(){
+   public function get_saved_imports($id = false){
 
+    if($id=== false){
       $q = $this->db->select('filename,id,uploaded,created_at,uploaded_by_name,imported')->get('schedule_imports');
 
       if($q->num_rows() >=1 ){
         return $q->result();
       }
 
-      return false;
+    }else{
+      $q = $this->db->select('filename,id,uploaded,created_at,uploaded_by_name,imported')->where('id',$id)->get('schedule_imports');
+
+      if($q->num_rows() >=1 ){
+        return $q->row();
+      }
+    }
+
+    return false;
    }
 
    public function initializeimport($post = false)
@@ -150,6 +170,7 @@ Class Admin_model extends MY_Model
                   $prep[$k]['time'] = $v[3];
                   $prep[$k]['period'] = $v[6];
                   $prep[$k]['fid'] = $id;
+                  $prep[$k]['sy'] = $this->sy->id;
             }
 
             $this->db->insert_batch('rooms', $prep);
@@ -251,6 +272,17 @@ Class Admin_model extends MY_Model
       $resturn = array('status'=>false,'message'=>'Unable to set current Year/Semester.');
     }
     return (object)$resturn; 
+   }
+
+   public function delete_csv($id = false){
+    $this->db->where('id',$id)->limit(1)->delete('schedule_imports');
+
+    // echo $this->db->last_query();
+    // die();
+    if($this->db->affected_rows() >= 1){
+      return true;
+    }
+    return false;
    }
 }
 

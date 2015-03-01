@@ -25,7 +25,10 @@
                 <?php if($is_checked):?>
                     <div class="alert alert-success"><strong><i class="fa fa-check"></i> Faculty is Already Checked.</strong></div>
                 <?php endif;?>
+
+
                 <div class="row">
+                    <?php if($is_faculty AND $is_faculty->fid):?>    
                     <div class="col-lg-5">
                              <form class="form-signin" method="post" action="<?php echo base_url();?>checker/savedtr">       
 
@@ -49,6 +52,7 @@
                                              <input type="hidden" name="time" id="time" value="<?php echo $tostored['time'];?>">
                                              <input type="hidden" name="period" id="period" value="<?php echo $tostored['period'];?>">
                                             <input type="hidden" name="faculty" id="faculty" value="<?php echo $tostored['fid'];?>">
+                                            <input type="hidden" name="cid" id="cid" value="<?php echo $cid;?>">
                                             <input type="text" class="form-control" id="remarks" name="remarks" placeholder="remarks">
                                                         
                                     </div>
@@ -70,6 +74,9 @@
               
         
     </div>
+            <?php else:?>
+                <div class="alert alert-warning"><strong>Notice.</strong> Faculty not found on database.</div>
+            <?php endif;?>
              <!-- /. PAGE INNER  -->
             </div>
          <!-- /. PAGE WRAPPER  -->

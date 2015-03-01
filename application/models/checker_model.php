@@ -5,7 +5,9 @@ Class Checker_model extends CI_Model
 
   function savedtr($data){
 
-        $this->db->insert('dtr',$data);   
+   $this->db->insert('dtr',$data);
+
+   return $this->db->affected_rows() >=1 ? true : false;
 
   }
 
@@ -61,17 +63,14 @@ Class Checker_model extends CI_Model
    }
 
    function get_dtr($faculty_id,$time){
-
-
-
+      // echo __function__;
+      // print_r($faculty_id);exit;
+      if($faculty_id == 0){return false;}
       $qw = $this->db->select('dtrid')->where('fid',$faculty_id)
                ->where('date(datetime)',date('Y-m-d'))
                ->where('time', $time)
                ->limit(1)
                ->get('dtr');
-
-    
-               // print_r($this->db->last_query());exit;
 
      return $qw->num_rows() >=1 ? true : false;
 

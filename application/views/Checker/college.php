@@ -1,7 +1,8 @@
 <div id="wrapper">
         <?php echo $this->load->view('template/checker_sidebar')?>
         <!-- /. NAV SIDE  -->
-        <div id="page-wrapper" >
+        <div id="page-wrapper" > 
+            <?php if(isset($system_message)){ echo  $system_message;}?>
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
@@ -44,6 +45,7 @@
                                <input type="hidden" name="time" id="time" value="<?php echo $row->time;?>">
                                <input type="hidden" name="period" id="period" value="<?php echo $row->period;?>">
                                <input type="hidden" name="faculty" id="faculty" value="<?php echo $row->fid;?>">
+                               <input type="hidden" name="aabbcc" id="aabbcc" value="<?php echo $thecid;?>">
                                <td style="width:150px"><button type="submit" value="Upload" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Remarks</button></td>
 
                                </form>

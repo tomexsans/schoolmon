@@ -36,16 +36,18 @@ class Checker extends CI_Controller {
     }
 
   function college($cid=NULL){
-
+    $this->load->library('session');
 
     $data['title'] = 'Tarlac State University';
     $data['college'] = $this->checker_model->getcollege();
+    $data['system_message'] = $this->session->flashdata('system_message');
 
     $cid = $this->uri->segment(3);
     $temp = $cid;
 
 
     $data['col']   = $this->whoiscollege($cid);
+    $data['thecid']   = $cid;
     $data['room']  = $this->checker_model->getrooms($temp);
     
 
@@ -81,7 +83,10 @@ class Checker extends CI_Controller {
       $faculty = $this->input->post('faculty');
       $status = $this->input->post('status');
       $remarks = $this->input->post('remarks');
+      $cid = $this->input->post('cid');
 
+
+      $user = $this->session->userdata('logged_in');
 
       $date = new DateTime();
       $stamp = $date->format('Y-m-d H:i:s');
@@ -94,11 +99,18 @@ class Checker extends CI_Controller {
                           'fid'     => $faculty,
                           'datetime' => $stamp,
                           'status'  => $status,
-                          'remarks' =>$remarks
-                                );
+                          'remarks' =>$remarks,
+                          'checker' => $user['firstname'].' '.$user['lastname']
+              );
 
-      $this->checker_model->savedtr($data);
-      redirect('checker','refresh');
+      $r =$this->checker_model->savedtr($data);
+      if($r === true){
+        $this->session->set_flashdata('system_message', '<div class="alert alert-success">DTR Was Saved.</div>');
+      }else{
+        $this->session->set_flashdata('system_message', '<div class="alert alert-danger">Unable to save DTR.</div>');
+
+      }
+      redirect('checker/college/'.$cid);
 
 
 
@@ -113,6 +125,7 @@ class Checker extends CI_Controller {
       $period = $this->input->post('period');
       $faculty = $this->input->post('faculty');
       $fidname = $this->whois($faculty);
+      $college = $this->input->post('aabbcc');
       
 
       $date = new DateTime();
@@ -130,6 +143,8 @@ class Checker extends CI_Controller {
 
       $data['faculty_data'] = $this->checker_model->get_faculty($faculty);
       $data['is_checked'] = $this->checker_model->get_dtr($faculty,$time);
+      $data['cid'] = $college;
+      $data['is_faculty'] = $this->checker_model->get_faculty($faculty);
 
 
       $data['title']  = 'Tarlac State University';

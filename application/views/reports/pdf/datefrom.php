@@ -33,12 +33,14 @@
 					<td>Room</td>
 					<td>Faculty Assigned</td>
 					<td>Status</td>
+					<td>Checked By:</td>
 				</tr>
 			<?php foreach ($value as $k => $rd):?>
 					<tr>
 						<td><?php echo $rd->roomcode;?></td>
 						<td><?php echo $rd->firstname.' '.$rd->lastname;?></td>
 						<td><?php echo $rd->status;?></td>
+						<td><?php echo $rd->checker;?></td>
 					</tr>
 			<?php $count++;endforeach;?>
 			</table>

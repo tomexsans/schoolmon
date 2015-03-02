@@ -155,7 +155,7 @@ class Admin extends MY_Controller {
 
 			$crud->set_subject('College Department');
 	
-			$crud->required_fields('name','college_Code','college_Code','Abv.','dean');
+			$crud->required_fields('name','ccode','ccode','Abv.','dean');
 			
 			//$crud->required_fields('name','ccode');
 
@@ -207,14 +207,14 @@ class Admin extends MY_Controller {
 			$crud->where('sy',$this->sy->id);
 
 			$crud->set_subject('Rooms');
-			$crud->columns('roomcode','sectioncode','fid','college_Code','day','time','period');
+			$crud->columns('roomcode','sectioncode','fid','ccode','day','time','period');
 		    $crud->field_type('day','dropdown',
             array('MONDAY' => 'MONDAY', 'SATURDAY' => 'SATURDAY' ,'TUESDAY & THURSDAY' => 'TUESDAY & THURSDAY' , 'TUESDAY & WEDNESDAY' => 'TUESDAY & WEDNESDAY','WEDNESDAY & FRIDAY'=>'WEDNESDAY & FRIDAY','THURSDAY & FRIDAY'=>'THURSDAY & FRIDAY',''));
 
 		        $crud->field_type('period','dropdown',
             array('1st' => '1st', '2nd' => '2nd'));
 
-		    $crud->required_fields('roomcode','sectioncode','college_Code','day','time','period','fid');    
+		    $crud->required_fields('roomcode','sectioncode','ccode','day','time','period','fid');    
 
 			$crud->set_relation('sectioncode','sections','sectioncode');
 			$crud->set_relation('fid','faculty','{lastname}' .',' . '{firstname} {mi}' . '.');
@@ -226,7 +226,7 @@ class Admin extends MY_Controller {
 			$crud->display_as('roomcode','Room Code');
 			$crud->display_as('sectioncode','Section Code');
 			$crud->display_as('fid','Faculty');
-			$crud->display_as('college_Code','College');
+			$crud->display_as('ccode','College');
              //$crud->display_as('ccode','College');
 
 

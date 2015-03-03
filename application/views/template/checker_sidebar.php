@@ -30,7 +30,9 @@ else{
 ?>
 </li>
 <li><a class="<?php echo $current_route == 'index' ? 'active-menu' : null ?>"  href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+<?php if($current_route !== 'index'):?>
 <li class="<?php echo $current_route == 'index' ? 'active-menu' : null ?>"><a   href="<?php echo base_url();?>" onclick="window.history.go(-1); return false;"><i class="fa fa-arrow-left"></i> Back</a></li>
+<?php endif;?>
   
 
 <?php if(isset($college)):foreach ($college as $row): ?>    

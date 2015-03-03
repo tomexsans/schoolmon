@@ -9,15 +9,27 @@
     <div class="col-md-12">
     <h2>Reports</h2>   
     <form method="post" action="<?php echo base_url();?>admin/gen_reports">
-    <label>From &nbsp; <input type="date" name="datestart" id="datestart"></label><label>&nbsp;To&nbsp;</label>
-    <input type="date" name="dateend" id="dateend"> <button type="submit">Generate</button>
+    <label>From &nbsp; <input type="date" name="datestart" id="datestart"></label>
+    <label>&nbsp;To&nbsp;</label><input type="date" name="dateend" id="dateend">
+    <?php
+
+        if(isset($college) AND $college !== false){
+            foreach ($college as $key => $value) {
+
+                $options[$value->cid] = $value->ccode.' | '.$value->name;
+            }
+
+            echo form_dropdown('college', $options);
+        }
+    ?>
+    <button type="submit">Generate</button>
     </form>
     </div>
     </div>              
 
     <hr />                
     <?php if($reports!=NULL){ ?>
-    <a href="<?php echo site_url('reports/dateFrom/'.$date1.'/'.$date2);?>" class="btn btn-primary btn-lg" target="_blank">Print Report</a>
+    <a href="<?php echo site_url('reports/dateFrom/'.$date1.'/'.$date2.'/'.$selected);?>" class="btn btn-primary btn-lg" target="_blank">Print Report</a>
     <h5><?php echo $report_title;?></h5>
     <table class="table ">
     <thead>

@@ -32,7 +32,15 @@
                                <tr>
                                <?php if($room){ $CI =& get_instance();?> 
 
-                               <?php foreach ($room as $row) {?>
+                               <?php 
+                                $current_day = strtolower(date('l'));
+                                foreach ($room as $row) {
+
+                                $installed = $row->day !== '' ? explode(' ',$row->day) : [];
+                                $days = array_map(function($e){
+                                  return strtolower($e);
+                                },$installed);
+                                ?>
                                <td><?php echo $row->roomcode; ?></td>
                                <td><?php echo $row->day;    ?></td>
                                <td><?php echo $row->time;    ?></td>
@@ -46,10 +54,15 @@
                                <input type="hidden" name="period" id="period" value="<?php echo $row->period;?>">
                                <input type="hidden" name="faculty" id="faculty" value="<?php echo $row->fid;?>">
                                <input type="hidden" name="aabbcc" id="aabbcc" value="<?php echo $thecid;?>">
-                               <td style="width:150px"><button type="submit" value="Upload" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Remarks</button></td>
-
+                               <input type="hidden" name="roomid" id="roomid" value="<?php echo $row->roomid;?>">
+                               <td style="width:150px">
+                               <?php if(in_array($current_day, $days)):?> 
+                                <button type="submit" value="Upload" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Remarks</button>
+                               <?php endif;?>
+                              </td>
+                                
                                </form>
-
+                              
 
                                </td>
                                </tr>

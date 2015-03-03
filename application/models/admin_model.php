@@ -27,7 +27,7 @@ Class Admin_model extends MY_Model
   }
 
 
-  function genrep($date1=NULL,$date2=NULL)
+  function genrep($date1=NULL,$date2=NULL,$col)
   {
 
     $dateExploded = explode('-',$date1);
@@ -36,7 +36,8 @@ Class Admin_model extends MY_Model
             ->join('faculty f','f.fid = d.fid','LEFT')
             ->where('YEAR(datetime)', $dateExploded[0])
             ->where('MONTH(datetime)', $dateExploded[1])
-            ->where('DAY(datetime)', $dateExploded[2]);
+            ->where('DAY(datetime)', $dateExploded[2])
+            ->where('collegeid',$col);
 
 
    $result =  $this->db->get();
@@ -44,6 +45,18 @@ Class Admin_model extends MY_Model
    if($result->num_rows() >=1 ){
     return $result->result();
    }
+  }
+
+  function getcol($colId = ''){
+    $q = $this->db->where('cid',$colId)->get('college');
+
+    return $q->num_rows() >= 1 ? $q->row() : false;
+  }
+
+  function getAllCollege(){
+    $q= $this->db->get('college');
+
+    return $q->num_rows() >= 1 ? $q->result() : false;
   }
 
 	function getalluser(){

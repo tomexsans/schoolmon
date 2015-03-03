@@ -26,8 +26,23 @@
 		$count = 0;
 	?>
 		<?php if(count($value) > 0):?>
+			
+			
+			<table style="width:100%">
+				<tr>
+					<td><small>To: <?php echo $printfor->dean;?></small></td>
+					<td><small><?php echo $printfor->name;?></small></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><small>Time: <?php echo $dates[$key][$count]->time;?> (<?php echo $dates[$key][$count]->period;?> Period)</small></td>
+					<td>Monitored By : <?php echo ucwords($dates[$key][$count]->checker);?></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
 			<h4>Date <?php echo $key;?></h4>
-			<small>Time: <?php echo $dates[$key][$count]->time;?> (<?php echo $dates[$key][$count]->period;?> Period)</small><br><br>
 			<table class="data">
 				<tr>
 					<td>Room</td>

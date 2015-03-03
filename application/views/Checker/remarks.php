@@ -53,6 +53,8 @@
                                              <input type="hidden" name="period" id="period" value="<?php echo $tostored['period'];?>">
                                             <input type="hidden" name="faculty" id="faculty" value="<?php echo $tostored['fid'];?>">
                                             <input type="hidden" name="cid" id="cid" value="<?php echo $cid;?>">
+                                            <input type="hidden" name="roomid" id="roomid" value="<?php echo $tostored['roomid'];?>">
+                                            <input type="hidden" name="collegee" id="collegee" value="<?php echo $tostored['collegee'];?>">
                                             <input type="text" class="form-control" id="remarks" name="remarks" placeholder="remarks">
                                                         
                                     </div>

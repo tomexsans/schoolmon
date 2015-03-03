@@ -75,7 +75,6 @@ class Checker extends CI_Controller {
 
   function savedtr(){
 
-    echo 'Saving Record . . .';
       $room = $this->input->post('room');
       $day  = $this->input->post('day');
       $time = $this->input->post('time');
@@ -84,7 +83,12 @@ class Checker extends CI_Controller {
       $status = $this->input->post('status');
       $remarks = $this->input->post('remarks');
       $cid = $this->input->post('cid');
+      $roomid = $this->input->post('roomid');
+      $collegee = $this->input->post('collegee');
 
+      // echo '<pre>';
+      // print_r($this->input->post());
+      // die();
 
       $user = $this->session->userdata('logged_in');
 
@@ -92,7 +96,7 @@ class Checker extends CI_Controller {
       $stamp = $date->format('Y-m-d H:i:s');
 
       $data= array(
-                          'room' => $room,
+                          'room' => $roomid,
                           'day'  => $day,
                           'time' => $time,
                           'period'  => $period,
@@ -100,6 +104,7 @@ class Checker extends CI_Controller {
                           'datetime' => $stamp,
                           'status'  => $status,
                           'remarks' =>$remarks,
+                          'collegeid' =>$collegee,
                           'checker' => $user['firstname'].' '.$user['lastname']
               );
 
@@ -126,7 +131,11 @@ class Checker extends CI_Controller {
       $faculty = $this->input->post('faculty');
       $fidname = $this->whois($faculty);
       $college = $this->input->post('aabbcc');
+      $roomid = $this->input->post('roomid');
       
+      // echo '<pre>';
+      // print_r($this->input->post());
+      // die();
 
       $date = new DateTime();
       $stamp = $date->format('Y-m-d H:i:s');
@@ -138,7 +147,9 @@ class Checker extends CI_Controller {
                           'period'  => $period,
                           'fid'     => $faculty,
                           'datetime' => $stamp,
-                          'fidname'  => $fidname);
+                          'roomid' => $roomid,
+                          'fidname'  => $fidname,
+                          'collegee'  => $college);
 
 
       $data['faculty_data'] = $this->checker_model->get_faculty($faculty);

@@ -34,6 +34,11 @@ class Admin extends MY_Controller {
         $data['date2']  = '';
         $data['report_title']  = '';
         $data['reports'] = NULL;
+        $data['college'] = $this->admin_model->getAllCollege();
+
+        $this->load->helper('form');
+
+
 		$this->load->view('Admin/header',$data);
 		$this->load->view('Admin/reports',$data);
 		$this->load->view('Admin/footer');
@@ -48,18 +53,23 @@ class Admin extends MY_Controller {
 
 			$date1  = $this->input->post('datestart');
 			$date2  = $this->input->post('dateend');	
+			$col  = $this->input->post('college');	
 
 
 			$data['report_title'] ="Report from " . $date1 . ' to ' . $date2;   
 			$data['title'] = 'Tarlac State University';
-			$data['reports'] = $this->admin_model->generate_reports($date1,$date2);
+			$data['reports'] = $this->admin_model->generate_reports($date1,$date2,$col);
 			$data['date1'] = $date1;
 			$data['date2'] = $date2;
+			$data['selected'] = $col;
+			$data['college'] = $this->admin_model->getAllCollege();
 
 		}else{
 			$data['report_title'] = '';   
 			$data['title'] = 'Tarlac State University';
 			$data['reports'] = false;
+			$data['college'] = $this->admin_model->getAllCollege();
+         $this->load->helper('form');
 		}
 
 
@@ -217,6 +227,7 @@ class Admin extends MY_Controller {
 		    $crud->required_fields('roomcode','sectioncode','ccode','day','time','period','fid');    
 
 			$crud->set_relation('sectioncode','sections','sectioncode');
+			$crud->set_relation('sy','semester','{code} {year_from}-{year_to}');
 			$crud->set_relation('fid','faculty','{lastname}' .',' . '{firstname} {mi}' . '.');
 			
 			$crud->set_relation('ccode','College','name');

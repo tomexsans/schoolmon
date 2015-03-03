@@ -7,7 +7,7 @@ class Reports extends CI_Controller {
 		$this->load->library('mpdf');
 	}
 
-	public function dateFrom($date1 = false,$date2 = false){
+	public function dateFrom($date1 = false,$date2 = false,$college_id = false){
 		if($data1 === false OR $date2 === false){
 			die('Unknown Request');
 			return false;
@@ -35,9 +35,11 @@ class Reports extends CI_Controller {
 
 	  $theDates = $dates($date1,$date2);
 	  foreach ($theDates as $key => $value) {
-	  		$res['dates'][$value] = $this->admin_model->genrep($value,$date2);
+	  		$res['dates'][$value] = $this->admin_model->genrep($value,$date2,$college_id);
 	  }
 
+
+	  $res['printfor'] = $this->admin_model->getcol($college_id);
 		// echo '<pre>';
 		// print_r($res);
 		// die();

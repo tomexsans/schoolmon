@@ -376,4 +376,6 @@ line-height: 1.428571429;
    
 }
 
-
+table#search-table tr.hidden{
+    display:none;
+}

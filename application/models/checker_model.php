@@ -1,5 +1,5 @@
 <?php
-Class Checker_model extends CI_Model
+Class Checker_model extends MY_Model
 {
 	
 
@@ -30,6 +30,7 @@ Class Checker_model extends CI_Model
     $this -> db -> select('*');
     $this -> db -> from('rooms');
     $this -> db -> where("ccode", $cid);
+    $this -> db -> where("sy", $this->sy->id);
     return $this->db->get()->result();
 
     }
@@ -73,6 +74,17 @@ Class Checker_model extends CI_Model
                ->get('dtr');
 
      return $qw->num_rows() >=1 ? true : false;
+
+   }
+
+   public function gettimes($college = ''){
+
+   $sql =  'SELECT DISTINCT day,time
+            FROM rooms
+            WHERE sy = ? AND ccode = ?';
+
+    $q = $this->db->query($sql,array($this->sy->id,$college));
+    return $q->num_rows() >= 1 ? $q->result() : false;
 
    }
 

@@ -6,17 +6,25 @@
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                     <h2><?php print_r($col); ?></h2>   
-                      
+                     <h2><?php print_r($col); ?></h2>
+
+                      <select class="form-control" id="search-schedule">
+                        <option value="All">All</option>
+                      <?php
+                        $opt = '';
+                        foreach ($time as $key => $value) {
+                          $opt .= '<option value="'.$value->day.'<->'.$value->time.'">'.$value->day.' - '.$value->time.'</option>';
+                        }
+                        echo $opt;
+                      ?>
+                      </select>
                     </div>
                 </div>              
                       
                 <hr />                
-                             <table class="table ">
+                    <table class="table table-striped" id="search-table">
                         <thead>
                             <tr>
-                             
-              
                             <th>Room</th>
                             <th>Day</th>
                             <th>Time</th>
@@ -36,14 +44,18 @@
                                 $current_day = strtolower(date('l'));
                                 foreach ($room as $row) {
 
+                                $stime = explode('-',$row->time);
+                                $timef = strtotime($stime[0]);
+                                $timet = strtotime($stime[1]);
+
                                 $installed = $row->day !== '' ? explode(' ',$row->day) : [];
                                 $days = array_map(function($e){
                                   return strtolower($e);
                                 },$installed);
                                 ?>
-                               <td><?php echo $row->roomcode; ?></td>
-                               <td><?php echo $row->day;    ?></td>
-                               <td><?php echo $row->time;    ?></td>
+                               <td ><?php echo $row->roomcode.'  '.$timef.'-'.$timet; ?></td>
+                               <td class="day"><?php echo $row->day;    ?></td>
+                               <td class="time"><?php echo $row->time;    ?></td>
                                <td><?php echo $row->period;    ?></td>
                                <td><?php echo $CI->whois($row->fid);    ?></td>
                                <td span="20px">
@@ -56,8 +68,14 @@
                                <input type="hidden" name="aabbcc" id="aabbcc" value="<?php echo $thecid;?>">
                                <input type="hidden" name="roomid" id="roomid" value="<?php echo $row->roomid;?>">
                                <td style="width:150px">
-                               <?php if(in_array($current_day, $days)):?> 
-                                <button type="submit" value="Upload" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Remarks</button>
+                               <?php if(in_array($current_day, $days)):?>
+                                  <?php if(time() >= $timef AND time() <= $timet):?>
+                                    <button type="submit" value="Upload" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Remarks</button>
+                                  <?php else:?>
+                                    <small>Remarks are closed</small>
+                                  <?php endif;?>
+                               <?php else:?>
+                                    <small>Remarks are closed</small>
                                <?php endif;?>
                               </td>
                                 

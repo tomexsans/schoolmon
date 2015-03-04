@@ -23,6 +23,7 @@ class Checker extends CI_Controller {
 	{
     $data['title'] = 'Tarlac State University';
     $data['college'] = $this->checker_model->getcollege();
+
     $this->load->view('Checker/header',$data);
     $this->load->view('Checker/dashboard',$data);
     $this->load->view('Checker/footer');
@@ -37,6 +38,7 @@ class Checker extends CI_Controller {
 
   function college($cid=NULL){
     $this->load->library('session');
+    $this->load->helper('form');
 
     $data['title'] = 'Tarlac State University';
     $data['college'] = $this->checker_model->getcollege();
@@ -46,11 +48,11 @@ class Checker extends CI_Controller {
     $temp = $cid;
 
 
-    $data['col']   = $this->whoiscollege($cid);
+    $data['col']  = $this->whoiscollege($cid);
     $data['thecid']   = $cid;
     $data['room']  = $this->checker_model->getrooms($temp);
     
-
+    $data['time'] = $this->checker_model->gettimes($cid);
 
     $this->load->view('checker/header',$data);
     $this->load->view('checker/college',$data);

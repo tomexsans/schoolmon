@@ -14,11 +14,11 @@
                 // console.log(theDayValue[1]);
                 var table = $('#search-table tbody tr');
 
-                $(table).show(50);
+                $(table).show(1);
 
                 if(current_val == 'All'){
                     // $(table).removeClass('hidden');
-                    $(table).show(50);
+                    $(table).show(1);
                     return true;
                 }
 
@@ -39,7 +39,7 @@
 
                     }else{
                        // $(elem).addClass('hidden');
-                       $(elem).hide(120);
+                       $(elem).hide(1);
                     }
                 });
             });

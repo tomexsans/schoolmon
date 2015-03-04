@@ -44,16 +44,16 @@
                                 $current_day = strtolower(date('l'));
                                 foreach ($room as $row) {
 
-                                $stime = explode('-',$row->time);
-                                $timef = strtotime($stime[0]);
-                                $timet = strtotime($stime[1]);
+                                @$stime = explode('-',$row->time);
+                                @$timef = strtotime(@$stime[0]);
+                                @$timet = strtotime(@$stime[1]);
 
                                 $installed = $row->day !== '' ? explode(' ',$row->day) : [];
                                 $days = array_map(function($e){
                                   return strtolower($e);
                                 },$installed);
                                 ?>
-                               <td ><?php echo $row->roomcode.'  '.$timef.'-'.$timet; ?></td>
+                               <td ><?php echo $row->roomcode?></td>
                                <td class="day"><?php echo $row->day;    ?></td>
                                <td class="time"><?php echo $row->time;    ?></td>
                                <td><?php echo $row->period;    ?></td>

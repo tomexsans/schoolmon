@@ -227,7 +227,7 @@ class Admin extends MY_Controller {
 		    $crud->required_fields('roomcode','sectioncode','ccode','day','time','period','fid');    
 
 			$crud->set_relation('sectioncode','sections','sectioncode');
-			$crud->set_relation('sy','semester','{code} {year_from}-{year_to}');
+			$crud->set_relation('sy','semester','{code} {year_from}-{year_to}',array('status' => 1));
 			$crud->set_relation('fid','faculty','{lastname}' .',' . '{firstname} {mi}' . '.');
 			
 			$crud->set_relation('ccode','College','name');

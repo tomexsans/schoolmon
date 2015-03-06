@@ -11,10 +11,22 @@
                       <select class="form-control" id="search-schedule">
                         <option value="All">All</option>
                       <?php
-                        $opt = '';
+                      /*  $opt = '';
                         foreach ($time as $key => $value) {
                           $opt .= '<option value="'.$value->day.'<->'.$value->time.'">'.$value->day.' - '.$value->time.'</option>';
                         }
+                      */
+
+                        $days = array('Monday'=>'Monday',
+                                 'Tuesday'=>'Tuesday',
+                                 'Wednesday'=>'Wednesday',
+                                 'Thursday'=>'Thursday',
+                                 'Friday'=>'Friday',
+                        );
+                        foreach ($days as $key => $value) {
+                          $opt .= '<option value="'.$key.'">'.$value.'</option>';
+                        }
+
                         echo $opt;
                       ?>
                       </select>

@@ -11,7 +11,7 @@
                 var elem = $(this);
                 var current_val = elem.val();
                 var theDayValue = current_val.split('<->',2);
-                // console.log(theDayValue[1]);
+
                 var table = $('#search-table tbody tr');
 
                 $(table).show(1);
@@ -24,18 +24,13 @@
 
                 $.each(table, function(index, val) {
                      
-                    var elem = $(this);
+                    var elem = $(val);
                     var elemDay = elem.find('td.day').text();
                     var elemTime = elem.find('td.time').text();
-                   
+                    var regexRes = testinput(current_val,elemDay);
 
-                    // console.log(elemTime);
-                    // console.log(elemDay);
-                    // console.log(theDayValue[0]);
-                    // console.log(theDayValue[1]);
-                    // console.log('---');
 
-                    if( elemDay == theDayValue[0] && elemTime == theDayValue[1] ){
+                    if( regexRes ){
 
                     }else{
                        // $(elem).addClass('hidden');
@@ -44,6 +39,21 @@
                 });
             });
         });
+
+        function testinput(re, str){
+            var midstring;
+            var regex = new RegExp(re,'i');
+                if (regex.test(str)) {
+                return true;
+            } else {
+                return false;
+            }
+            
+            // console.log(str + midstring + regex.source);
+            // console.log(str + midstring + regex);
+            // console.log(regex.test(str));
+            // console.log(str);
+        }
     </script>
 
 </body>

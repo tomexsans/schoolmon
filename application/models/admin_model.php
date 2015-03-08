@@ -14,10 +14,12 @@ Class Admin_model extends MY_Model
   }
 
 
-  function generate_reports($date1=NULL,$date2=NULL){
+  function generate_reports($date1=NULL,$date2=NULL,$col){
    $this ->db->from('dtr')->join('rooms','dtr.room = rooms.roomid','LEFT');
    $this->db->where('dtr.datetime >=', $date1);
    $this->db->where('dtr.datetime <=', $date2);
+   $this->db->where('dtr.sy', $this->sy->id);
+   $this->db->where('dtr.collegeid', $col);
    $q = $this->db->get();
    // print_r($this->db->last_query());
    // print_r($q->result());

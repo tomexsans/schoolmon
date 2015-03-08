@@ -9,7 +9,7 @@ class Reports extends CI_Controller {
 
 	public function dateFrom($date1 = false,$date2 = false,$college_id = false){
 		if($data1 === false OR $date2 === false){
-			die('Unknown Request');
+			die('<small style="color:#f00;font-weight:bold">Please Go back, Refresh page and Click Print Report Again.</small>');
 			return false;
 		}
 
@@ -22,8 +22,12 @@ class Reports extends CI_Controller {
 		$this->load->model('admin_model');
 		// $res = $this->admin_model->genrep($date1,$date2);
 
-	    $dates  = function($begin,$end)
+	    $dates  = function($begin = false,$end = false)
 	    {
+	    	// var_dump(strtotime($end));
+	    	
+	    	if(strtotime($begin) === false || strtotime($end) === false){return false;exit;}
+
 	      $begin = new DateTime($begin);
 	      $end = new DateTime($end.' +1 day');
 	      $daterange = new DatePeriod($begin, new DateInterval('P1D'), $end);
@@ -34,15 +38,16 @@ class Reports extends CI_Controller {
 	    };
 
 	  $theDates = $dates($date1,$date2);
+
+	  if($theDates === false){
+	  	die('<small style="color:#f00;font-weight:bold">Please Go back, Refresh page and Click Print Report Again.</small>');
+	  }
 	  foreach ($theDates as $key => $value) {
 	  		$res['dates'][$value] = $this->admin_model->genrep($value,$date2,$college_id);
 	  }
 
 
 	  $res['printfor'] = $this->admin_model->getcol($college_id);
-		// echo '<pre>';
-		// print_r($res);
-		// die();
 
 		$html = $this->load->view('reports/pdf/datefrom',$res,TRUE);
 

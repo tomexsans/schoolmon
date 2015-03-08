@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Checker extends CI_Controller {
+class Checker extends MY_Controller {
   
 
    public function __construct()
@@ -107,7 +107,8 @@ class Checker extends CI_Controller {
                           'status'  => $status,
                           'remarks' =>$remarks,
                           'collegeid' =>$collegee,
-                          'checker' => $user['firstname'].' '.$user['lastname']
+                          'checker' => $user['firstname'].' '.$user['lastname'],
+                          'sy' => $this->sy->id
               );
 
       $r =$this->checker_model->savedtr($data);

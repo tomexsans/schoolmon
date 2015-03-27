@@ -598,4 +598,13 @@ class Admin extends MY_Controller {
 		$this->load->view('Admin/psemester',$body);
 		$this->load->view('Admin/footer');
 	}
+
+	public function test(){
+		
+		$st = 'WF 01:00 PM - 02:30 PM [SH 206]';
+		// preg_match_all("/([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9] (AM|PM|am|pm)/", $st, $asdf);
+		// $word = explode(' ', $st);
+		
+		print_r(preg_split('/^ \[a-x] $/', 'Hello , jasper f'));
+	}
 }	

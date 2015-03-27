@@ -133,7 +133,7 @@ Class Admin_model extends MY_Model
     return false;
    }
 
-   public function initializeimport($post = false)
+   public function initializeimport2($post = false)
    {
       if($post === false){
         return (object)array('status'=>false,'message'=>'Unable to retrieve data.');
@@ -183,6 +183,96 @@ Class Admin_model extends MY_Model
                   $prep[$k]['ccode'] = $ccode;
                   $prep[$k]['day'] = $v[2];
                   $prep[$k]['time'] = $v[3];
+                  $prep[$k]['period'] = $v[6];
+                  $prep[$k]['fid'] = $id;
+                  $prep[$k]['sy'] = $this->sy->id;
+            }
+
+            $this->db->insert_batch('rooms', $prep);
+
+            if($this->db->affected_rows() >=1){
+
+              $this->db->set('imported',1)->where('id',$post['id'])->limit(1)->update('schedule_imports');
+              $return = array('status'=>true,'message'=>'Import Was Successfull.');
+            }else{
+              $return = array('status'=>false,'message'=>'Import Encountered an Error');
+            }
+          }else{
+             $return = array('status'=>false,'message'=>'CSV is lacking some columns ,Please follow the right CSV template for importing schedules');
+          }
+        }else{
+           $return = array('status'=>false,'message'=>'Empty CSV File found.');
+        }
+      }else{
+        $return = array('status'=>false,'message'=>'No Import Found.');
+      }
+
+      return (object)$return;
+   }
+
+   public function initializeimport($post = false)
+   {
+      if($post === false){
+        return (object)array('status'=>false,'message'=>'Unable to retrieve data.');
+      }
+
+      $q = $this->db->where('id',$post['id'])->limit(1)->get('schedule_imports');
+      
+      if($q->num_rows() >=1)
+      {
+        $data = $q->row();
+
+
+        //path to file
+        $path = './imports/'.$data->filename;
+
+        //create handle
+        $handle = fopen($path,'r');
+        $csv_data = array();
+        //get csv file data
+        while ( ($data = fgetcsv($handle,1000) ) !== FALSE ) {
+          $csv_data[] = $data;
+        }
+
+        if(count($csv_data) >=1)
+        {
+          if(count($csv_data[0]) == 48)
+          {
+            foreach($csv_data as $k => $v)
+            {
+                  $name = explode(',',$v[16]);
+                  $lastname = explode(' ', $name[1]);
+                  $college = explode('-', $v[14]);
+                  $time = explode(' ',$v[21]);
+                  $roomcode = substr($v[21], strpos($v[21], '['));
+                  $roomcode = str_replace('[','', $roomcode);
+                  $roomcode = str_replace(']','', $roomcode);
+
+                  //get id of faculty
+                  $q1 = $this->db->where('lastname',$name[0])->where('firstname',$lastname[1])->get('faculty');
+                  // $id = $this->db->last_query();
+                  $id = $q1->num_rows() >=1 ? $q1->row()->fid : 0;
+
+                  $q2 = $this->db->where('ccode',$college[0])->limit(1)->get('college');
+                  // $ccode = $this->db->last_query();
+                  $ccode = $q2->num_rows() >=1 ? $q2->row()->cid : 0;
+
+                  $q3 = $this->db->where('sectioncode',$v[20])->limit(1)->get('sections');
+                  // $seccode = $this->db->last_query();
+                  $seccode = $q3->num_rows() >=1 ? $q3->row()->secid : 0;
+
+
+                  // $debug[$k]['name'] = $name;
+                  // $debug[$k]['lastname'] = $lastname;
+                  // $debug[$k]['college'] = $college;
+                  // $debug[$k]['time'] = $time;
+                  // $debug[$k]['roomcode'] = $roomcode;
+
+                  $prep[$k]['roomcode'] = $roomcode;
+                  $prep[$k]['sectioncode'] = $seccode;
+                  $prep[$k]['ccode'] = $ccode;
+                  $prep[$k]['day'] = $time[0];
+                  $prep[$k]['time'] = $time[1].' '.$time[2].' - '.$time[4].' '.$time[5];
                   $prep[$k]['period'] = $v[6];
                   $prep[$k]['fid'] = $id;
                   $prep[$k]['sy'] = $this->sy->id;

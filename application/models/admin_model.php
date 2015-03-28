@@ -234,39 +234,28 @@ Class Admin_model extends MY_Model
           $csv_data[] = $data;
         }
 
+        // echo '<pre>';
+        // print_r($csv_data);
+        // die();
         if(count($csv_data) >=1)
         {
           if(count($csv_data[0]) == 48)
           {
             foreach($csv_data as $k => $v)
             {
-                  $name = explode(',',$v[16]);
-                  $lastname = explode(' ', $name[1]);
                   $college = explode('-', $v[14]);
                   $time = explode(' ',$v[21]);
                   $roomcode = substr($v[21], strpos($v[21], '['));
                   $roomcode = str_replace('[','', $roomcode);
                   $roomcode = str_replace(']','', $roomcode);
 
-                  //get id of faculty
-                  $q1 = $this->db->where('lastname',$name[0])->where('firstname',$lastname[1])->get('faculty');
-                  // $id = $this->db->last_query();
-                  $id = $q1->num_rows() >=1 ? $q1->row()->fid : 0;
+                  $fid = $this->check_insert_faculty($v[16]);
 
                   $q2 = $this->db->where('ccode',$college[0])->limit(1)->get('college');
                   // $ccode = $this->db->last_query();
                   $ccode = $q2->num_rows() >=1 ? $q2->row()->cid : 0;
 
-                  $q3 = $this->db->where('sectioncode',$v[20])->limit(1)->get('sections');
-                  // $seccode = $this->db->last_query();
-                  $seccode = $q3->num_rows() >=1 ? $q3->row()->secid : 0;
-
-
-                  // $debug[$k]['name'] = $name;
-                  // $debug[$k]['lastname'] = $lastname;
-                  // $debug[$k]['college'] = $college;
-                  // $debug[$k]['time'] = $time;
-                  // $debug[$k]['roomcode'] = $roomcode;
+                  $seccode = $this->check_insert_section($v[20],$ccode);
 
                   $prep[$k]['roomcode'] = $roomcode;
                   $prep[$k]['sectioncode'] = $seccode;
@@ -274,9 +263,14 @@ Class Admin_model extends MY_Model
                   $prep[$k]['day'] = $time[0];
                   $prep[$k]['time'] = $time[1].' '.$time[2].' - '.$time[4].' '.$time[5];
                   $prep[$k]['period'] = $v[6];
-                  $prep[$k]['fid'] = $id;
+                  $prep[$k]['fid'] = $fid;
                   $prep[$k]['sy'] = $this->sy->id;
             }
+
+
+            // echo '<pre>';
+            // print_r($prep);
+            // die();
 
             $this->db->insert_batch('rooms', $prep);
 
@@ -388,6 +382,40 @@ Class Admin_model extends MY_Model
       return true;
     }
     return false;
+   }
+
+
+   public function check_insert_faculty($faculty_name = false)
+   {
+
+    $lname = preg_split('/, /', $faculty_name );
+    $mi = substr($lname[1], -2);
+    $fname = substr($lname[1],0,-2);
+
+    //get id of faculty
+    $q1 = $this->db->where('lastname',$lname[0])->where('firstname',$fname)->where('mi',$mi)->get('faculty');
+    $id = $q1->num_rows() >=1 ? $q1->row()->fid : 0;
+    if($q1->num_rows() >= 1){
+      return $q1->row()->fid;
+    }else{
+      $insert['lastname'] = $lname[0];
+      $insert['firstname'] = $fname;
+      $insert['mi'] = $mi;
+
+      $this->db->insert('faculty',$insert);
+      return $this->db->affected_rows() >= 1 ? $this->db->insert_id() : 0;
+    }
+   }
+
+   public function check_insert_section($section_name = false,$ccode){
+      $q3 = $this->db->where('sectioncode',$section_name)->where('ccode',$ccode)->limit(1)->get('sections');
+
+      if($q3->num_rows() >=1){
+        return $q3->row()->secid;
+      }else{
+        $this->db->insert('sections',array('sectioncode'=>$section_name,'ccode'=>$ccode));
+        return $this->db->affected_rows() >= 1 ? $this->db->insert_id() : 0;
+      }
    }
 }
 

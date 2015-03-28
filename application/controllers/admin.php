@@ -219,9 +219,14 @@ class Admin extends MY_Controller {
 			$crud->set_subject('Rooms');
 			$crud->columns('roomcode','sectioncode','fid','ccode','day','time','period');
 		    $crud->field_type('day','dropdown',
-            array('MONDAY' => 'MONDAY', 'SATURDAY' => 'SATURDAY' ,'TUESDAY & THURSDAY' => 'TUESDAY & THURSDAY' , 'TUESDAY & WEDNESDAY' => 'TUESDAY & WEDNESDAY','WEDNESDAY & FRIDAY'=>'WEDNESDAY & FRIDAY','THURSDAY & FRIDAY'=>'THURSDAY & FRIDAY',''));
+            array('M' => 'MONDAY', 
+            		'S' => 'SATURDAY' ,
+            		'TTh' => 'TUESDAY & THURSDAY' , 
+            		'TW' => 'TUESDAY & WEDNESDAY',
+            		'WF'=>'WEDNESDAY & FRIDAY',
+            		'TF'=>'THURSDAY & FRIDAY',''));
 
-		        $crud->field_type('period','dropdown',
+	        $crud->field_type('period','dropdown',
             array('1st' => '1st', '2nd' => '2nd'));
 
 		    $crud->required_fields('roomcode','sectioncode','ccode','day','time','period','fid');    
@@ -600,11 +605,14 @@ class Admin extends MY_Controller {
 	}
 
 	public function test(){
+		$name = preg_split('/, /', 'Asmoundo , colloer j.');
+		$exploded_name = explode(' ',$name[1]);
+		$lname = is_array($exploded_name) && count($exploded_name) >= 2 ? $exploded_name[0] : null;
+		$mi = is_array($exploded_name) && count($exploded_name) >= 2 ? str_replace('.', '', $exploded_name[1] ) : null;
+		echo "<pre>";
 		
-		$st = 'WF 01:00 PM - 02:30 PM [SH 206]';
-		// preg_match_all("/([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9] (AM|PM|am|pm)/", $st, $asdf);
-		// $word = explode(' ', $st);
-		
-		print_r(preg_split('/^ \[a-x] $/', 'Hello , jasper f'));
+		preg_match_all('/^[a-z]./i','ma. colloer j.',$var);
+
+		print_r(substr('ma coller j.',0, -2));
 	}
 }	
